@@ -1,6 +1,6 @@
-# survey-inspired-decimation
+# survey-inspired-decimation-sat
 
-Ordinary SID algorithm
+Ordinary SID algorithm for SAT
 
 # source
 
