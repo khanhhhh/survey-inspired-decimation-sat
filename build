@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+GOPATH=$(pwd) go build -o a.out
