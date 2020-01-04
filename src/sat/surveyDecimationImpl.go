@@ -12,9 +12,9 @@ func (ins *instance) predict() map[variable]bool {
 	numIterations := 1 + int(100*math.Log2(float64(len(ins.allVariables()))))
 	var etaChange float64 = 1
 	g := ins.makePropagationGraph()
-	iterations := 0
-	for etaChange > tolerance && iterations < numIterations {
-		iterations++
+	iteration := 0
+	for etaChange > tolerance && iteration < numIterations {
+		iteration++
 		etaChange, g = ins.iteratePropagationGraph(g, smooth)
 	}
 	if etaChange > tolerance {
@@ -24,7 +24,7 @@ func (ins *instance) predict() map[variable]bool {
 	if trivialCover {
 		panic("trivial cover")
 	}
-	fmt.Printf("iteration: %v/%v\n", iterations, numIterations)
+	fmt.Printf("iteration: %v/%v\n", iteration, numIterations)
 	out[variable] = value
 	return out
 }

@@ -6,6 +6,7 @@ import "math/rand"
 type Instance interface {
 	PushClause(...Literal)
 	Solve() map[variable]bool
+	IsConflict(map[variable]bool) bool
 }
 
 // Literal :
