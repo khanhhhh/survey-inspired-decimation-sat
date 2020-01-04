@@ -5,7 +5,7 @@ import "math/rand"
 // Instance :
 type Instance interface {
 	PushClause(...Literal)
-	Solve() []bool
+	Solve() map[variable]bool
 }
 
 // Literal :

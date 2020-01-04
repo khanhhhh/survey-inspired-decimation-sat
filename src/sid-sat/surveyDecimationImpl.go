@@ -4,7 +4,7 @@ import "math"
 
 import "fmt"
 
-var tolerance float64 = 0.01
+var tolerance float64 = 0.001
 var smooth float64 = 1.0
 
 func (ins *instance) predict() (variable, bool) {
@@ -26,7 +26,7 @@ func (ins *instance) predict() (variable, bool) {
 	return variable, value
 }
 
-func (ins *instance) Solve() []bool {
+func (ins *instance) Solve() map[variable]bool {
 	numVariables := len(ins.allVariables())
 	solution := make(map[variable]bool)
 	for len(solution) < numVariables {
@@ -35,9 +35,5 @@ func (ins *instance) Solve() []bool {
 		fmt.Println(len(solution))
 		ins.reduce(variable, value)
 	}
-	out := make([]bool, numVariables)
-	for i := range out {
-		out[i] = solution[i]
-	}
-	return out
+	return solution
 }
