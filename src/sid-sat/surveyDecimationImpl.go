@@ -1,8 +1,8 @@
 package sat
 
-import "fmt"
-
 import "math"
+
+import "fmt"
 
 var tolerance float64 = 0.01
 var smooth float64 = 1.0
@@ -12,7 +12,7 @@ func (ins *instance) predict() (variable, bool) {
 	var etaChange float64 = 1
 	g := ins.makePropagationGraph()
 	iterations := 0
-	for etaChange > tolerance && iterations < 100*numIterations {
+	for etaChange > tolerance && iterations < 1000*numIterations {
 		iterations++
 		etaChange, g = ins.iteratePropagationGraph(g, smooth)
 	}
@@ -23,7 +23,6 @@ func (ins *instance) predict() (variable, bool) {
 	if trivialCover {
 		panic("trivial cover")
 	}
-	fmt.Printf("variable: %v, %v \t iterations: %v\n", variable, value, iterations)
 	return variable, value
 }
 
@@ -33,6 +32,7 @@ func (ins *instance) Solve() []bool {
 	for len(solution) < numVariables {
 		variable, value := ins.predict()
 		solution[variable] = value
+		fmt.Println(len(solution))
 		ins.reduce(variable, value)
 	}
 	out := make([]bool, numVariables)
