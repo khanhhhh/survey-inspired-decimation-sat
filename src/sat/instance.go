@@ -5,8 +5,9 @@ import "math/rand"
 // Instance :
 type Instance interface {
 	PushClause(...Literal)
-	Solve() map[variable]bool
-	IsConflict(map[variable]bool) bool
+	SurveyInspiredDecimation() (bool, map[variable]bool)
+	WalkSAT() (bool, map[variable]bool)
+	Evaluate(map[variable]bool) (bool, clause)
 }
 
 // Literal :

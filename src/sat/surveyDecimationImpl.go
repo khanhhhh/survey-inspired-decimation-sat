@@ -7,34 +7,41 @@ import "fmt"
 var tolerance float64 = 0.001
 var smooth float64 = 1.0
 
-func (ins *instance) predict() map[variable]bool {
-	out := make(map[variable]bool)
-	numIterations := 1 + int(100*math.Log2(float64(len(ins.allVariables()))))
+func (ins *instance) predict() (bool, map[variable]bool) {
 	var etaChange float64 = 1
 	g := ins.makePropagationGraph()
+	numIterations := 1 + int(100*math.Log2(float64(len(ins.allVariables()))))
 	iteration := 0
 	for etaChange > tolerance && iteration < numIterations {
 		iteration++
 		etaChange, g = ins.iteratePropagationGraph(g, smooth)
 	}
 	if etaChange > tolerance {
-		panic("halt")
+		//panic("halt")
+		return false, nil
 	}
-	trivialCover, variable, value := ins.decimation(g, smooth)
+	trivialCover, i, value := ins.decimation(g, smooth)
 	if trivialCover {
-		panic("trivial cover")
+		//panic("trivial cover")
+		fmt.Println("\ntrivial cover, doing walkSAT")
+		return ins.WalkSAT()
 	}
 	fmt.Printf("iteration: %v/%v\n", iteration, numIterations)
-	out[variable] = value
-	return out
+	out := make(map[variable]bool)
+	out[i] = value
+	return true, out
 }
 
-func (ins *instance) Solve() map[variable]bool {
+func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 	numVariables := len(ins.allVariables())
 	solution := make(map[variable]bool)
 	for len(solution) < numVariables {
 		fmt.Printf("variable solving: %v/%v\t", 1+len(solution), numVariables)
-		prediction := ins.predict()
+		sat, prediction := ins.predict()
+		if sat == false {
+			fmt.Println("prediction failed")
+			return false, nil
+		}
 		for i, value := range prediction {
 			solution[i] = value
 			ins.reduce(i, value)
@@ -43,5 +50,5 @@ func (ins *instance) Solve() map[variable]bool {
 			}
 		}
 	}
-	return solution
+	return true, solution
 }
