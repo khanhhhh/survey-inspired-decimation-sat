@@ -7,7 +7,8 @@ import "fmt"
 var tolerance float64 = 0.001
 var smooth float64 = 1.0
 
-func (ins *instance) predict() (variable, bool) {
+func (ins *instance) predict() map[variable]bool {
+	out := make(map[variable]bool)
 	numIterations := 1 + int(100*math.Log2(float64(len(ins.allVariables()))))
 	var etaChange float64 = 1
 	g := ins.makePropagationGraph()
@@ -24,7 +25,8 @@ func (ins *instance) predict() (variable, bool) {
 		panic("trivial cover")
 	}
 	fmt.Printf("iteration: %v/%v\n", iterations, numIterations)
-	return variable, value
+	out[variable] = value
+	return out
 }
 
 func (ins *instance) Solve() map[variable]bool {
@@ -32,11 +34,13 @@ func (ins *instance) Solve() map[variable]bool {
 	solution := make(map[variable]bool)
 	for len(solution) < numVariables {
 		fmt.Printf("variable solving: %v/%v\t", 1+len(solution), numVariables)
-		variable, value := ins.predict()
-		solution[variable] = value
-		ins.reduce(variable, value)
-		if ins.emptyClause() {
-			panic("empty clause")
+		prediction := ins.predict()
+		for i, value := range prediction {
+			solution[i] = value
+			ins.reduce(i, value)
+			if ins.emptyClause() {
+				panic("empty clause")
+			}
 		}
 	}
 	return solution
