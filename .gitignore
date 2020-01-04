@@ -16,4 +16,5 @@
 # vendor/
 
 __debug_bin
-
+*.txt
+*.csv

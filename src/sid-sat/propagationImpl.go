@@ -19,8 +19,8 @@ func (ins *instance) makePropagationGraph() *propagationGraph {
 	return out
 }
 
-func (ins *instance) iteratePropagationGraph(g *propagationGraph, smooth float64, tolerance float64) (bool, *propagationGraph) {
-	var converged bool = true
+func (ins *instance) iteratePropagationGraph(g *propagationGraph, smooth float64) (message, *propagationGraph) {
+	var etaChange message = 0
 	out := &propagationGraph{
 		make(map[edge][3]message),
 		make(map[edge]message),
@@ -36,12 +36,12 @@ func (ins *instance) iteratePropagationGraph(g *propagationGraph, smooth float64
 				eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
 			}
 		}
-		if abs(eta-g.etaMap[e]) > tolerance {
-			converged = false
+		if abs(eta-g.etaMap[e]) > etaChange {
+			etaChange = abs(eta - g.etaMap[e])
 		}
 		// detect nan
 		if math.IsNaN(eta) {
-			return true, g
+			return 0, g
 		}
 		out.etaMap[e] = eta
 		// pi
@@ -60,8 +60,8 @@ func (ins *instance) iteratePropagationGraph(g *propagationGraph, smooth float64
 		out.piMap[e] = triplet
 		// detect nan
 		if math.IsNaN(triplet[0]) || math.IsNaN(triplet[1]) || math.IsNaN(triplet[2]) {
-			return true, g
+			return 0, g
 		}
 	}
-	return converged, out
+	return etaChange, out
 }
