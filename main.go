@@ -10,7 +10,7 @@ import "sync"
 
 func main() {
 	re := rand.New(rand.NewSource(1234154342))
-	numTests := 10
+	numTests := 4
 	instance := make([]sat.Instance, numTests)
 	for i := range instance {
 		instance[i] = sat.Random3SAT(re, 4096, 4.0)
