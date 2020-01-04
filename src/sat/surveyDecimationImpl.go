@@ -23,7 +23,7 @@ func (ins *instance) predict() (variable, bool) {
 	if trivialCover {
 		panic("trivial cover")
 	}
-	fmt.Printf("iteration: %v/%v \t", iterations, numIterations)
+	fmt.Printf("iteration: %v/%v\n", iterations, numIterations)
 	return variable, value
 }
 
@@ -31,9 +31,9 @@ func (ins *instance) Solve() map[variable]bool {
 	numVariables := len(ins.allVariables())
 	solution := make(map[variable]bool)
 	for len(solution) < numVariables {
+		fmt.Printf("variable solving: %v/%v\t", 1+len(solution), numVariables)
 		variable, value := ins.predict()
 		solution[variable] = value
-		fmt.Println(len(solution))
 		ins.reduce(variable, value)
 		if ins.emptyClause() {
 			panic("empty clause")
