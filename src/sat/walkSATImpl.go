@@ -2,8 +2,6 @@ package sat
 
 import "math/rand"
 
-import "fmt"
-
 var randFlip int = 100
 
 func (ins *instance) WalkSAT() (bool, map[variable]bool) {
@@ -16,7 +14,6 @@ func (ins *instance) WalkSAT() (bool, map[variable]bool) {
 		varList = append(varList, i)
 	}
 	numIterations := 100 * len(out)
-	fmt.Printf("doing %v iterations walkSAT\n", numIterations)
 	iteration := 0
 	for iteration < numIterations {
 		iteration++
