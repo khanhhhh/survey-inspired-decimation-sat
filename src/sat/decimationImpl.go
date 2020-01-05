@@ -1,7 +1,7 @@
 package sat
 
 func (ins *instance) decimation(g *propagationGraph, smooth float64) (bool, variable, bool) {
-	var trivialCover bool
+	var nonTrivialCover bool
 	var maxBias message = 0
 	var maxBiasVariable variable
 	var maxBiasSign bool
@@ -32,9 +32,9 @@ func (ins *instance) decimation(g *propagationGraph, smooth float64) (bool, vari
 		}
 	}
 	if maxBias == 0 {
-		trivialCover = true
+		nonTrivialCover = false
 	} else {
-		trivialCover = false
+		nonTrivialCover = true
 	}
-	return trivialCover, maxBiasVariable, maxBiasSign
+	return nonTrivialCover, maxBiasVariable, maxBiasSign
 }

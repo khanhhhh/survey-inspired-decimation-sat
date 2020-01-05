@@ -1,34 +1,37 @@
 package main
 
-import "sat"
-
-import "math/rand"
-
-import "fmt"
-
-import "sync"
+import (
+	"fmt"
+	"math/rand"
+	"sat"
+)
 
 func main() {
 	rand.Seed(1234154342)
-	numTests := 1
-	instance := make([]sat.Instance, numTests)
-	for i := range instance {
-		instance[i] = sat.Random3SAT(40, 4.2)
-	}
-	var wg sync.WaitGroup
-	for _, ins := range instance {
-		wg.Add(1)
-		go func(ins sat.Instance) {
-			defer wg.Done()
-			//sat, assignment := ins.SurveyInspiredDecimation()
-			sat, assignment := ins.WalkSAT()
-			if sat {
-				eval, _ := ins.Evaluate(assignment)
-				fmt.Println(sat, eval)
-			} else {
-				fmt.Println("failed")
+	correct := 0
+	incorrect := 0
+	predicted := 0
+	for {
+		ins := sat.Random3SAT(256, 3.0)
+		ok, variable, value := ins.Predict()
+		if ok {
+			predicted++
+		}
+		solved, assignment := ins.WalkSAT()
+		if solved {
+			if ok {
+				if assignment[variable] == value {
+					correct++
+				} else {
+					incorrect++
+				}
 			}
-		}(ins)
+		}
+		fmt.Printf("{predicted: %v, correct: %v, incorrect: %v}\n", predicted, correct, incorrect)
+		fmt.Printf(
+			"\t%v > true probability > %v\n",
+			1-float32(incorrect)/float32(predicted),
+			float32(correct)/float32(predicted),
+		)
 	}
-	wg.Wait()
 }

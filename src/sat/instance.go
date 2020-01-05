@@ -4,8 +4,9 @@ import "math/rand"
 
 // Instance :
 type Instance interface {
+	Clone() Instance
 	PushClause(...Literal)
-	SurveyInspiredDecimation() (bool, map[variable]bool)
+	Predict() (bool, variable, bool)
 	WalkSAT() (bool, map[variable]bool)
 	Evaluate(map[variable]bool) (bool, clause)
 }
@@ -22,6 +23,25 @@ func NewInstance() Instance {
 		make(map[variable]map[clause]bool),
 		make(map[clause]map[variable]bool),
 	}
+}
+
+// Clone :
+func (ins *instance) Clone() Instance {
+	variableMap := make(map[variable]map[clause]bool)
+	clauseMap := make(map[clause]map[variable]bool)
+	for i := range ins.variableMap {
+		variableMap[i] = make(map[clause]bool)
+		for a, value := range ins.variableMap[i] {
+			variableMap[i][a] = value
+		}
+	}
+	for a := range ins.clauseMap {
+		clauseMap[a] = make(map[variable]bool)
+		for i, value := range ins.clauseMap[a] {
+			clauseMap[a][i] = value
+		}
+	}
+	return &instance{variableMap, clauseMap}
 }
 
 // PushClause :

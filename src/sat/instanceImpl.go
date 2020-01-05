@@ -27,25 +27,6 @@ func (ins *instance) allEdges() []edge {
 	return out
 }
 
-// clone
-func (ins *instance) clone() *instance {
-	variableMap := make(map[variable]map[clause]bool)
-	clauseMap := make(map[clause]map[variable]bool)
-	for i := range ins.variableMap {
-		variableMap[i] = make(map[clause]bool)
-		for a, value := range ins.variableMap[i] {
-			variableMap[i][a] = value
-		}
-	}
-	for a := range ins.clauseMap {
-		clauseMap[a] = make(map[variable]bool)
-		for i, value := range ins.clauseMap[a] {
-			clauseMap[a][i] = value
-		}
-	}
-	return &instance{variableMap, clauseMap}
-}
-
 // emptyClause :
 // return true if there are some empty clause
 func (ins *instance) emptyClause() bool {
