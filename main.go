@@ -13,7 +13,7 @@ func main() {
 	numTests := 1
 	instance := make([]sat.Instance, numTests)
 	for i := range instance {
-		instance[i] = sat.Random3SAT(re, 1024, 4.0)
+		instance[i] = sat.Random3SAT(re, 40, 4.0)
 	}
 	var wg sync.WaitGroup
 	for _, ins := range instance {

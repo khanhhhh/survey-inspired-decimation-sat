@@ -45,29 +45,27 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 		{
 			ins1 := ins.clone()
 			ins1.reduce(i, value)
-			if ins1.emptyClause() {
-				panic("empty clause")
-			}
-			sat, assignment := ins1.SurveyInspiredDecimation()
-			if sat {
-				return sat, assignment
+			if !ins1.emptyClause() {
+				sat, assignment := ins1.SurveyInspiredDecimation()
+				if sat {
+					fmt.Println("prediction succeeded")
+					return sat, assignment
+				}
 			}
 		}
 		// ins2
 		{
 			ins2 := ins.clone()
 			ins2.reduce(i, !value)
-			if ins2.emptyClause() {
-				//panic("empty clause")
-				return false, nil
+			if !ins2.emptyClause() {
+				sat, assignment := ins2.SurveyInspiredDecimation()
+				if sat {
+					fmt.Println("prediction failed")
+					return sat, assignment
+				}
 			}
-			sat, assignment := ins2.SurveyInspiredDecimation()
-			if sat {
-				fmt.Println("prediction failed")
-				return sat, assignment
-			}
-			return false, nil
 		}
+		return false, nil
 	} else {
 		return true, prediction
 	}
