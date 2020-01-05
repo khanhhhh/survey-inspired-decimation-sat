@@ -7,7 +7,8 @@ import (
 var tolerance float64 = 0.001
 var smooth float64 = 1.0
 
-func (ins *instance) Predict() (bool, variable, bool) {
+func (ins *instance) Predict() (bool, bool, variable, bool) {
+	var converged bool
 	var nonTrivialCover bool
 	var variable variable
 	var value bool
@@ -25,10 +26,14 @@ func (ins *instance) Predict() (bool, variable, bool) {
 		}
 		// converge ?
 		if etaChange > tolerance {
-			nonTrivialCover = false
+			converged = false
 		} else {
+			converged = true
 			nonTrivialCover, variable, value = ins.decimation(g, smooth)
+			if !nonTrivialCover {
+				panic("trivial cover")
+			}
 		}
 	}
-	return nonTrivialCover, variable, value
+	return converged, nonTrivialCover, variable, value
 }

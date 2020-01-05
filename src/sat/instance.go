@@ -6,7 +6,7 @@ import "math/rand"
 type Instance interface {
 	Clone() Instance
 	PushClause(...Literal)
-	Predict() (bool, variable, bool)
+	Predict() (bool, bool, variable, bool)
 	WalkSAT() (bool, map[variable]bool)
 	Evaluate(map[variable]bool) (bool, clause)
 }

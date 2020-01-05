@@ -4,8 +4,8 @@ import "math/rand"
 
 import "math"
 
-var randFlip int = 128
-var base float64 = 1.3
+var randFlip int = 64
+var base float64 = 1.4
 
 func (ins *instance) WalkSAT() (bool, map[variable]bool) {
 	out := make(map[variable]bool)
