@@ -10,7 +10,7 @@ func main() {
 	incorrect := 0
 	predicted := 0
 	for iter := 0; ; iter++ {
-		ins := sat.Random3SAT(64, 3.0)
+		ins := sat.Random3SAT(40, 4.0)
 		ok, variable, value := ins.Predict()
 		if ok {
 			predicted++
