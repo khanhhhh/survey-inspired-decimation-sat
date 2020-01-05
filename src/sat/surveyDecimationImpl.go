@@ -49,6 +49,7 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 				sat, assignment := ins1.SurveyInspiredDecimation()
 				if sat {
 					fmt.Println("prediction succeeded: \tvariable:", len(ins.allVariables()))
+					assignment[i] = value
 					return sat, assignment
 				}
 			}
@@ -61,6 +62,7 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 				sat, assignment := ins2.SurveyInspiredDecimation()
 				if sat {
 					fmt.Println("prediction failed: \tvariable:", len(ins.allVariables()))
+					assignment[i] = !value
 					return sat, assignment
 				}
 			}

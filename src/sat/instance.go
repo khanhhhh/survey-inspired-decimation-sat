@@ -48,7 +48,7 @@ func (ins *instance) PushClause(someLiterals ...Literal) {
 }
 
 // Random3SAT :
-func Random3SAT(rand *rand.Rand, numVariables int, density float64) Instance {
+func Random3SAT(numVariables int, density float64) Instance {
 	numClauses := int(density * float64(numVariables))
 	out := NewInstance()
 	for c := 0; c < numClauses; c++ {
