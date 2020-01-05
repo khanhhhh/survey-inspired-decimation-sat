@@ -39,10 +39,12 @@ func main() {
 		upperPrecision := float32(predicted-incorrect) / float32(predicted)
 		lowerPrecision := float32(correct) / float32(predicted)
 		fmt.Printf("%.4f > precision > %.4f\n", upperPrecision, lowerPrecision)
-		fmt.Printf("%.4f > combined precision > %.4f\n",
-			upperPrecision*predictedRate+0.5*(1.0-predictedRate),
-			lowerPrecision*predictedRate+0.5*(1.0-predictedRate),
-		)
+		upperCombinedPrecision := upperPrecision*predictedRate + 0.5*(1.0-predictedRate)
+		lowerCombinedPrecision := lowerPrecision*predictedRate + 0.5*(1.0-predictedRate)
+		fmt.Printf("%.4f > combined precision > %.4f\n", upperCombinedPrecision, lowerCombinedPrecision)
+		upperBase := 2.0 - upperCombinedPrecision
+		lowerBase := 2.0 - lowerCombinedPrecision
+		fmt.Printf("average case: O(%.4f^n) < complexity < O(%.4f^n)\n", upperBase, lowerBase)
 		fmt.Println()
 	}
 }
