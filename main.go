@@ -10,10 +10,10 @@ import "sync"
 
 func main() {
 	re := rand.New(rand.NewSource(1234154342))
-	numTests := 4
+	numTests := 1
 	instance := make([]sat.Instance, numTests)
 	for i := range instance {
-		instance[i] = sat.Random3SAT(re, 4096, 4.0)
+		instance[i] = sat.Random3SAT(re, 1024, 4.0)
 	}
 	var wg sync.WaitGroup
 	for _, ins := range instance {
