@@ -48,7 +48,7 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 			if !ins1.emptyClause() {
 				sat, assignment := ins1.SurveyInspiredDecimation()
 				if sat {
-					fmt.Println("prediction succeeded")
+					fmt.Println("prediction succeeded: variable:", len(ins.allVariables()))
 					return sat, assignment
 				}
 			}
@@ -60,7 +60,7 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 			if !ins2.emptyClause() {
 				sat, assignment := ins2.SurveyInspiredDecimation()
 				if sat {
-					fmt.Println("prediction failed")
+					fmt.Println("prediction failed: variable:", len(ins.allVariables()))
 					return sat, assignment
 				}
 			}
