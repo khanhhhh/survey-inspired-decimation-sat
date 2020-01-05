@@ -2,7 +2,10 @@ package sat
 
 import "math/rand"
 
-var randFlip int = 100
+import "math"
+
+var randFlip int = 128
+var base float64 = 1.5
 
 func (ins *instance) WalkSAT() (bool, map[variable]bool) {
 	out := make(map[variable]bool)
@@ -13,7 +16,7 @@ func (ins *instance) WalkSAT() (bool, map[variable]bool) {
 	for i := range out {
 		varList = append(varList, i)
 	}
-	numIterations := 100 * len(out)
+	numIterations := 1 + int(math.Pow(base, float64(len(out))))
 	iteration := 0
 	for iteration < numIterations {
 		iteration++
