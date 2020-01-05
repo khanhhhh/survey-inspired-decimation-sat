@@ -18,7 +18,7 @@ func (ins *instance) predict() (bool, map[variable]bool) {
 		etaChange, g = ins.iteratePropagationGraph(g, smooth)
 	}
 	if etaChange > tolerance {
-		return false, nil
+		return ins.WalkSAT()
 	}
 	trivialCover, i, value := ins.decimation(g, smooth)
 	if trivialCover {
@@ -48,7 +48,7 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 			if !ins1.emptyClause() {
 				sat, assignment := ins1.SurveyInspiredDecimation()
 				if sat {
-					fmt.Println("prediction succeeded: variable:", len(ins.allVariables()))
+					fmt.Println("prediction succeeded: \tvariable:", len(ins.allVariables()))
 					return sat, assignment
 				}
 			}
@@ -60,13 +60,14 @@ func (ins *instance) SurveyInspiredDecimation() (bool, map[variable]bool) {
 			if !ins2.emptyClause() {
 				sat, assignment := ins2.SurveyInspiredDecimation()
 				if sat {
-					fmt.Println("prediction failed: variable:", len(ins.allVariables()))
+					fmt.Println("prediction failed: \tvariable:", len(ins.allVariables()))
 					return sat, assignment
 				}
 			}
 		}
 		return false, nil
 	} else {
+		fmt.Println("prediction walksat: \tvariable:", len(ins.allVariables()))
 		return true, prediction
 	}
 }
