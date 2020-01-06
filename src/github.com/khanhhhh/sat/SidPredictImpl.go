@@ -8,6 +8,8 @@ var tolerance float64 = 0.001
 var smooth float64 = 1.0
 var iterMul float64 = 100
 
+// SidPredict :
+// Survey Inspired Decimation: Predict the value of a variable
 func (ins *instance) SidPredict() (converged bool, nonTrivialCover bool, variable variable, value bool) {
 	// survey propagation
 	var absoluteEtaChange float64 = 1

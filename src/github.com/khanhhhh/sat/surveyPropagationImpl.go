@@ -7,7 +7,8 @@ type surveyPropagationGraph struct {
 	etaMap map[edge]message    // clause -> variable
 }
 
-// Make the empty Survey Propagation Graph
+// makeSurveyPropagationGraph :
+// Make an empty Survey Propagation Graph
 func (ins *instance) makeSurveyPropagationGraph() (graph *surveyPropagationGraph) {
 	graph = &surveyPropagationGraph{
 		make(map[edge][3]message),
@@ -20,7 +21,8 @@ func (ins *instance) makeSurveyPropagationGraph() (graph *surveyPropagationGraph
 	return graph
 }
 
-// Iterate Survey Propagation Graph
+// iterateSurveyPropagationGraph :
+// Iterate a Survey Propagation Graph
 func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGraph, smooth float64) (absoluteEtaChange message, graphOut *surveyPropagationGraph) {
 	// initialize etaChange to 0
 	absoluteEtaChange = 0

@@ -1,5 +1,7 @@
 package sat
 
+// surveyDecimation :
+// inference max bias variable from a Survey Propagation Graph
 func (ins *instance) surveyDecimation(graphIn *surveyPropagationGraph, smooth float64) (nonTrivialCover bool, maxBiasVariable variable, maxBiasValue bool) {
 	var maxBias message = 0
 	// select maxBias over all variables

@@ -1,6 +1,17 @@
 package sat
 
-// C+(i)
+type message = float64
+
+func abs(messageIn message) (messageOut message) {
+	if messageIn >= 0 {
+		messageOut = +messageIn
+	} else {
+		messageOut = -messageIn
+	}
+	return messageOut
+}
+
+// C+(i) :
 // set of clauses contain i as a positive literal
 func (ins *instance) clausePositive(i variable) (setOut []clause) {
 	setOut = make([]clause, 0)
@@ -12,7 +23,7 @@ func (ins *instance) clausePositive(i variable) (setOut []clause) {
 	return setOut
 }
 
-// C-(i)
+// C-(i) :
 // set of clauses contain i as a negative literal
 func (ins *instance) clauseNegative(i variable) (setOut []clause) {
 	setOut = make([]clause, 0)
@@ -24,7 +35,7 @@ func (ins *instance) clauseNegative(i variable) (setOut []clause) {
 	return setOut
 }
 
-// Cs(a, i)
+// Cs(a, i) :
 // set of clauses contain the same sign literal
 func (ins *instance) clauseAgree(edgeIn edge) (setOut []clause) {
 	setOut = make([]clause, 0)
@@ -39,7 +50,7 @@ func (ins *instance) clauseAgree(edgeIn edge) (setOut []clause) {
 	return setOut
 }
 
-// Cu(a, i)
+// Cu(a, i) :
 // set of clauses contain the different sign literal
 func (ins *instance) clauseDisagree(edgeIn edge) (setOut []clause) {
 	setOut = make([]clause, 0)

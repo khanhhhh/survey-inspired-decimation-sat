@@ -5,62 +5,66 @@ type instance struct {
 	clauseMap   map[clause]map[variable]bool
 }
 
-// variables
-func (ins *instance) allVariables() []variable {
-	out := make([]variable, 0)
-	for i := range ins.variableMap {
-		out = append(out, i)
+// allVariables :
+// set of all variables
+func (ins *instance) allVariables() (setOut []variable) {
+	setOut = make([]variable, 0)
+	for variable := range ins.variableMap {
+		setOut = append(setOut, variable)
 	}
-	return out
+	return setOut
 }
 
-// clauses
-func (ins *instance) allClauses() []clause {
-	out := make([]clause, 0)
-	for a := range ins.clauseMap {
-		out = append(out, a)
+// allClauses :
+// set of all clauses
+func (ins *instance) allClauses() (setOut []clause) {
+	setOut = make([]clause, 0)
+	for clause := range ins.clauseMap {
+		setOut = append(setOut, clause)
 	}
-	return out
+	return setOut
 }
 
-// edges
-func (ins *instance) allEdges() []edge {
-	out := make([]edge, 0)
-	for v := range ins.variableMap {
-		for c := range ins.variableMap[v] {
-			out = append(out,
-				edge{v, c},
-			)
+// allEdges :
+// set of all edges
+func (ins *instance) allEdges() (setOut []edge) {
+	setOut = make([]edge, 0)
+	for variable := range ins.variableMap {
+		for clause := range ins.variableMap[variable] {
+			setOut = append(setOut, edge{variable, clause})
 		}
 	}
-	return out
+	return setOut
 }
 
-// capVariables
-func (ins *instance) capVariables() int {
-	maxVarIndex := 0
-	for _, i := range ins.allVariables() {
-		if i > maxVarIndex {
-			maxVarIndex = i
+// capVariables :
+// range of all variable indices
+func (ins *instance) capVariables() (maxVarIndex int) {
+	maxVarIndex = 0
+	for _, variable := range ins.allVariables() {
+		if variable > maxVarIndex {
+			maxVarIndex = variable
 		}
 	}
 	return 1 + maxVarIndex
 }
 
-// capClauses
-func (ins *instance) capClauses() int {
-	maxClauseIndex := 0
-	for _, a := range ins.allClauses() {
-		if a > maxClauseIndex {
-			maxClauseIndex = a
+// capClauses :
+// range of all clause indices
+func (ins *instance) capClauses() (maxClauseIndex int) {
+	maxClauseIndex = 0
+	for _, clause := range ins.allClauses() {
+		if clause > maxClauseIndex {
+			maxClauseIndex = clause
 		}
 	}
 	return maxClauseIndex
 }
 
-// emptyClause :
+/*
+// hasEmptyClause :
 // return true if there are some empty clause
-func (ins *instance) emptyClause() bool {
+func (ins *instance) hasEmptyClause() bool {
 	for c := range ins.clauseMap {
 		if len(ins.clauseMap[c]) == 0 {
 			return true
@@ -68,7 +72,6 @@ func (ins *instance) emptyClause() bool {
 	}
 	return false
 }
-
 // reduce :
 // reduce the assignment by setting value to a variable
 func (ins *instance) reduce(i variable, value bool) {
@@ -86,3 +89,4 @@ func (ins *instance) reduce(i variable, value bool) {
 		}
 	}
 }
+*/
