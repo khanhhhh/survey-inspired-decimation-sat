@@ -41,15 +41,10 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 			for j := range ins.clauseMap[a] {
 				if j != i {
 					triplet := graphIn.piMap[edge{j, a}]
-					if (triplet[0] + triplet[1] + triplet[2]) != 0 {
-						eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
-					} else { // triplet [0, 1]
-						// vanishing float64
-						eta = 0.0
-					}
+					eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
 				}
 			}
-			// detect nan
+			// detect nan : if sum triplet == 0 => eta = NaN
 			if math.IsNaN(eta) {
 				panic("eta: NaN")
 			}
