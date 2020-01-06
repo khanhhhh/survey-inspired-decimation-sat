@@ -17,7 +17,7 @@ func (ins *instance) Predict() (bool, bool, variable, bool) {
 		var etaChange float64 = 1
 		g := ins.makePropagationGraph()
 		{
-			numIterations := 1 + int(100*math.Log2(float64(len(ins.allVariables()))))
+			numIterations := 1 + int(100*math.Log2(float64(ins.capVariables())))
 			iteration := 0
 			for etaChange > tolerance && iteration < numIterations {
 				iteration++

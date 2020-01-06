@@ -14,6 +14,15 @@ func (ins *instance) allVariables() []variable {
 	return out
 }
 
+// clauses
+func (ins *instance) allClauses() []clause {
+	out := make([]clause, 0)
+	for a := range ins.clauseMap {
+		out = append(out, a)
+	}
+	return out
+}
+
 // edges
 func (ins *instance) allEdges() []edge {
 	out := make([]edge, 0)
@@ -25,6 +34,28 @@ func (ins *instance) allEdges() []edge {
 		}
 	}
 	return out
+}
+
+// capVariables
+func (ins *instance) capVariables() int {
+	maxVarIndex := 0
+	for _, i := range ins.allVariables() {
+		if i > maxVarIndex {
+			maxVarIndex = i
+		}
+	}
+	return 1 + maxVarIndex
+}
+
+// capClauses
+func (ins *instance) capClauses() int {
+	maxClauseIndex := 0
+	for _, a := range ins.allClauses() {
+		if a > maxClauseIndex {
+			maxClauseIndex = a
+		}
+	}
+	return maxClauseIndex
 }
 
 // emptyClause :
