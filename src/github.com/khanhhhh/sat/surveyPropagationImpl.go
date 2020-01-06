@@ -71,6 +71,10 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 			if math.IsNaN(triplet[0]) || math.IsNaN(triplet[1]) || math.IsNaN(triplet[2]) {
 				panic("triplet: NaN")
 			}
+			// detect zero
+			if triplet[0]+triplet[1]+triplet[2] == 0 {
+				panic("triplet: Zero")
+			}
 			graphOut.piMap[e] = triplet
 		}
 	}
