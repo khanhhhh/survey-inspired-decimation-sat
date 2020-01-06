@@ -10,7 +10,7 @@ var iterMul float64 = 100
 
 // SidPredict :
 // Survey Inspired Decimation: Predict the value of a variable
-func (ins *instance) SidPredict() (converged bool, nonTrivialCover bool, variable variable, value bool) {
+func (ins *instance) SidPredict() (converged bool, nonTrivialCover bool, variableOut variable, valueOut bool) {
 	// survey propagation
 	var absoluteEtaChange float64 = 1
 	graph := ins.makeSurveyPropagationGraph()
@@ -23,14 +23,14 @@ func (ins *instance) SidPredict() (converged bool, nonTrivialCover bool, variabl
 			}
 		}
 	}
-	// converge ?
+	// converged ?
 	{
 		if absoluteEtaChange > tolerance {
 			converged = false
 		} else {
 			converged = true
-			nonTrivialCover, variable, value = ins.surveyDecimation(graph, smooth)
+			nonTrivialCover, variableOut, valueOut = ins.surveyDecimation(graph, smooth)
 		}
 	}
-	return converged, nonTrivialCover, variable, value
+	return converged, nonTrivialCover, variableOut, valueOut
 }

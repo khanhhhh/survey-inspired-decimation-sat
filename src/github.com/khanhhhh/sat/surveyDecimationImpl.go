@@ -5,17 +5,17 @@ package sat
 func (ins *instance) surveyDecimation(graphIn *surveyPropagationGraph, smooth float64) (nonTrivialCover bool, maxBiasVariable variable, maxBiasValue bool) {
 	var maxBias message = 0
 	// select maxBias over all variables
-	for _, i := range ins.allVariables() {
+	for _, variable := range ins.allVariables() {
 		// calculate mu
 		var mu [3]message
 		{
 			var productPositive message = 1
 			var productNegative message = 1
-			for _, b := range ins.clausePositive(i) {
-				productPositive *= 1 - graphIn.etaMap[edge{i, b}]
+			for _, clause := range ins.clausePositive(variable) {
+				productPositive *= 1 - graphIn.etaMap[edge{variable, clause}]
 			}
-			for _, b := range ins.clauseNegative(i) {
-				productNegative *= 1 - graphIn.etaMap[edge{i, b}]
+			for _, clause := range ins.clauseNegative(variable) {
+				productNegative *= 1 - graphIn.etaMap[edge{variable, clause}]
 			}
 			mu[0] = (1 - smooth*productNegative) * productPositive
 			mu[1] = (1 - smooth*productPositive) * productNegative
@@ -32,10 +32,10 @@ func (ins *instance) surveyDecimation(graphIn *surveyPropagationGraph, smooth fl
 		}
 		// select maxBias
 		{
-			bias := abs(mu[1] - mu[0])
+			bias := absMessage(mu[1] - mu[0])
 			if bias > maxBias {
 				maxBias = bias
-				maxBiasVariable = i
+				maxBiasVariable = variable
 				maxBiasValue = (mu[1] > mu[0])
 			}
 		}

@@ -7,7 +7,8 @@ import "math/rand"
 type Instance interface {
 	Clone() (InstanceOut Instance)
 	PushClause(...Literal)
-	SidPredict() (converged bool, nonTrivialCover bool, variable variable, value bool)
+	SidPredict() (converged bool, nonTrivialCover bool, variableOut variable, valueOut bool)
+	MaxMinPredict() (variableOut variable, valueOut bool)
 	WalkSolve() (sat bool, assignment map[variable]bool)
 	CdclSolve() (sat bool, assignment map[variable]bool)
 	Evaluate(assignment map[variable]bool) (sat bool, conflict clause)

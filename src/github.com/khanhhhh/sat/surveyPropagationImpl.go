@@ -44,8 +44,8 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 					eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
 				}
 			}
-			if abs(eta-graphIn.etaMap[e]) > absoluteEtaChange {
-				absoluteEtaChange = abs(eta - graphIn.etaMap[e])
+			if absMessage(eta-graphIn.etaMap[e]) > absoluteEtaChange {
+				absoluteEtaChange = absMessage(eta - graphIn.etaMap[e])
 			}
 			// detect nan
 			if math.IsNaN(eta) {

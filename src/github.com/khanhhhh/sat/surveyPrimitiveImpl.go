@@ -2,7 +2,7 @@ package sat
 
 type message = float64
 
-func abs(messageIn message) (messageOut message) {
+func absMessage(messageIn message) (messageOut message) {
 	if messageIn >= 0 {
 		messageOut = +messageIn
 	} else {
