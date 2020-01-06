@@ -44,8 +44,8 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 					if (triplet[0] + triplet[1] + triplet[2]) != 0 {
 						eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
 					} else { // triplet [0, 1]
+						// vanishing float64
 						eta = 0.0
-						// pass
 					}
 				}
 			}
