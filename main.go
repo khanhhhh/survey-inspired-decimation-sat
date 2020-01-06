@@ -24,6 +24,7 @@ func main() {
 				if ok && nonTrivialCover {
 					nonTrivialCountSID++
 					// test
+					ins := ins.Clone()
 					ins.PushClause(sat.Literal{
 						Index: variable,
 						Sign:  value,
@@ -37,6 +38,7 @@ func main() {
 			{
 				variable, value := ins.MaxMinPredict()
 				// test
+				ins := ins.Clone()
 				ins.PushClause(sat.Literal{
 					Index: variable,
 					Sign:  value,

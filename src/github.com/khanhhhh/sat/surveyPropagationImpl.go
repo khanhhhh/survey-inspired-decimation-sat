@@ -41,15 +41,20 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 			for j := range ins.clauseMap[a] {
 				if j != i {
 					triplet := graphIn.piMap[edge{j, a}]
-					eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
+					if (triplet[0] + triplet[1] + triplet[2]) != 0 {
+						eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
+					} else { // triplet [0, 1]
+						eta = 0.0
+						// pass
+					}
 				}
-			}
-			if absMessage(eta-graphIn.etaMap[e]) > absoluteEtaChange {
-				absoluteEtaChange = absMessage(eta - graphIn.etaMap[e])
 			}
 			// detect nan
 			if math.IsNaN(eta) {
-				panic("NaN")
+				panic("eta: NaN")
+			}
+			if absMessage(eta-graphIn.etaMap[e]) > absoluteEtaChange {
+				absoluteEtaChange = absMessage(eta - graphIn.etaMap[e])
 			}
 			graphOut.etaMap[e] = eta
 		}
@@ -67,11 +72,11 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 			triplet[0] = (1 - smooth*productDisagree) * productAgree
 			triplet[1] = (1 - smooth*productAgree) * productDisagree
 			triplet[2] = smooth * productAgree * productDisagree
-			graphOut.piMap[e] = triplet
 			// detect nan
 			if math.IsNaN(triplet[0]) || math.IsNaN(triplet[1]) || math.IsNaN(triplet[2]) {
-				panic("NaN")
+				panic("triplet: NaN")
 			}
+			graphOut.piMap[e] = triplet
 		}
 	}
 	return absoluteEtaChange, graphOut
