@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/khanhhhh/sat"
 )
 
@@ -15,7 +16,7 @@ func main() {
 		isSat, _ := ins.CdclSAT()
 		if isSat {
 			satCount++
-			ok, nonTrivialCover, variable, value := ins.Predict()
+			ok, nonTrivialCover, variable, value := ins.SidPredict()
 			if ok {
 				convergedCount++
 			}
