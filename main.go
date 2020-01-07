@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	test2()
+	test1()
 }
 
 func test2() {
@@ -56,7 +56,7 @@ func test1() {
 	trueCounterSID := 0
 	trueCounterMaxMin := 0
 	for {
-		ins := instance.Random3SAT(128, 4.2)
+		ins := instance.Random3SAT(128, 4.26)
 		sat, assignment := cdcl.Solve(ins)
 		eval, _ := ins.Evaluate(assignment)
 		if sat {
