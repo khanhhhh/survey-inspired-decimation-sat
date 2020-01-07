@@ -2,13 +2,48 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/khanhhhh/sat/guesser/maxmin"
 	"github.com/khanhhhh/sat/guesser/surveydecimation"
 	"github.com/khanhhhh/sat/instance"
 	"github.com/khanhhhh/sat/solver/cdcl"
+	"github.com/khanhhhh/sat/solver/search"
 )
 
 func main() {
+	test2()
+}
+
+func test2() {
+	ins := instance.Random3SAT(10, 3.2)
+	{
+		sat, assignment := cdcl.Solve(ins)
+		eval, _ := ins.Evaluate(assignment)
+		fmt.Println(sat, eval)
+	}
+	{
+		guesser1 := func(ins instance.Instance) (variableOut instance.Variable, valueOut bool) {
+			variableOut, valueOut = maxmin.Guess(ins, 1)
+			return variableOut, valueOut
+		}
+		guesser2 := func(ins instance.Instance) (variableOut instance.Variable, valueOut bool) {
+			var converged bool
+			var nonTrivial bool
+			converged, nonTrivial, variableOut, valueOut = surveydecimation.Guess(ins, 1.0)
+			if converged == false || nonTrivial == false {
+				variableOut, valueOut = maxmin.Guess(ins, 1)
+			}
+			return variableOut, valueOut
+		}
+		_ = guesser1
+		_ = guesser2
+		sat, assignment := search.Solve(ins, guesser1)
+		eval, _ := ins.Evaluate(assignment)
+		fmt.Println(sat, eval)
+	}
+}
+
+func test1() {
 	counter := 0
 	convergentCounterSID := 0
 	trueCounterSID := 0
