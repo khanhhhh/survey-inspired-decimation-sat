@@ -2,7 +2,7 @@ package maxmin
 
 import "github.com/khanhhhh/sat/instance"
 
-func abs(valueIn int) (valueOut int) {
+func abs(valueIn float64) (valueOut float64) {
 	if valueIn >= 0 {
 		valueOut = +valueIn
 	} else {
@@ -11,16 +11,17 @@ func abs(valueIn int) (valueOut int) {
 	return valueOut
 }
 
-func Guess(ins instance.Instance) (variableOut instance.Variable, valueOut bool) {
-	maxBias := -1
+// Guess :
+func Guess(ins instance.Instance, smooth float64) (variableOut instance.Variable, valueOut bool) {
+	var maxBias float64 = -1
 	variableMap := ins.VariableMap()
 	for variable := range variableMap {
-		count := 0
+		var count float64 = 0
 		for _, value := range variableMap[variable] {
 			if value {
-				count++
+				count += 1.0
 			} else {
-				count--
+				count -= smooth
 			}
 		}
 		if abs(count) > maxBias {

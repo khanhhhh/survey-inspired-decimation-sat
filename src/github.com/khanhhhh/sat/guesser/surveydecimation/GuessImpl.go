@@ -9,12 +9,11 @@ import (
 )
 
 var tolerance float64 = 0.001
-var smooth float64 = 1.0
 var iterMul float64 = 100
 
 // Guess :
 // Survey Inspired Decimation: Predict the value of a variable
-func Guess(ins instance.Instance) (converged bool, nonTrivialCover bool, variableOut instance.Variable, valueOut bool) {
+func Guess(ins instance.Instance, smooth float64) (converged bool, nonTrivialCover bool, variableOut instance.Variable, valueOut bool) {
 	// survey propagation
 	var absoluteEtaChange float64 = 1
 	graph := makeSurveyPropagationGraph(ins)

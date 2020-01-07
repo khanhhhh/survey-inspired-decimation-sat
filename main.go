@@ -24,7 +24,7 @@ func main() {
 			counter++
 			{
 				ins := ins.Clone()
-				converged, nonTrivial, variable, value := surveydecimation.Guess(ins)
+				converged, nonTrivial, variable, value := surveydecimation.Guess(ins, 1.0)
 				if converged && nonTrivial {
 					convergentCounterSID++
 					// test
@@ -38,7 +38,7 @@ func main() {
 				}
 				{
 					ins := ins.Clone()
-					variable, value := maxmin.Guess(ins)
+					variable, value := maxmin.Guess(ins, 1.0)
 					// test
 					clause := make(map[instance.Variable]bool)
 					clause[variable] = value
