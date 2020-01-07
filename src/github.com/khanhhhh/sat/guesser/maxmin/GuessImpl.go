@@ -1,6 +1,6 @@
 package maxmin
 
-import "github.com/khanhhhh/sat-solver/instance"
+import "github.com/khanhhhh/sat/instance"
 
 func abs(valueIn int) (valueOut int) {
 	if valueIn >= 0 {

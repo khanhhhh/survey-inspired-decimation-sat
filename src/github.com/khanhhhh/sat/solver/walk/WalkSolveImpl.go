@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/khanhhhh/sat-solver/instance"
+	"github.com/khanhhhh/sat/instance"
 )
 
 var randFlip int = 64

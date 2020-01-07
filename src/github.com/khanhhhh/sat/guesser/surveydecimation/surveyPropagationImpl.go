@@ -1,8 +1,9 @@
 package surveydecimation
 
-import "github.com/khanhhhh/sat-solver/guesser/surveydecimation/message"
-
-import "github.com/khanhhhh/sat-solver/instance"
+import (
+	"github.com/khanhhhh/sat/guesser/surveydecimation/message"
+	"github.com/khanhhhh/sat/instance"
+)
 
 type surveyPropagationGraph struct {
 	piMap  map[edge][3]message.Message // variable -> clause

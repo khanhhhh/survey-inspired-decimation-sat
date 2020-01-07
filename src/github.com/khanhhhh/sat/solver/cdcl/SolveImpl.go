@@ -3,7 +3,7 @@ package cdcl
 import (
 	"github.com/irifrance/gini"
 	"github.com/irifrance/gini/z"
-	"github.com/khanhhhh/sat-solver/instance"
+	"github.com/khanhhhh/sat/instance"
 )
 
 func makeVariableMap(mapIn map[instance.Variable]map[instance.Clause]bool) (mapOut map[instance.Variable]z.Var) {

@@ -1,6 +1,6 @@
 package surveydecimation
 
-import "github.com/khanhhhh/sat-solver/instance"
+import "github.com/khanhhhh/sat/instance"
 
 type edge struct {
 	variable instance.Variable
