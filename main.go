@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/khanhhhh/sat/guesser/maxmin"
 	"github.com/khanhhhh/sat/guesser/surveydecimation"
 	"github.com/khanhhhh/sat/instance"
 	"github.com/khanhhhh/sat/solver/cdcl"
@@ -35,52 +34,48 @@ func test1() {
 	counter := 0
 	convergentCounterSID := 0
 	trueCounterSID := 0
-	trueCounterMaxMin := 0
-	for {
-		ins := instance.Random3SAT(128, 4.26)
-		sat, assignment := cdcl.Solve(ins)
+	var durationSID time.Duration = 0
+	var durationSolver time.Duration = 0
+	solver := cdcl.Solve
+	for iter := 1; ; iter++ {
+		ins := instance.Random3SAT(128, 64/15)
+		t := time.Now()
+		sat, assignment := solver(ins)
+		dt := time.Since(t)
 		eval, _ := ins.Evaluate(assignment)
 		if sat {
+			durationSolver += dt
 			if eval == false {
 				panic("cdcl failed")
 			}
 			counter++
 			{
 				ins := ins.Clone()
+				t := time.Now()
 				converged, nonTrivial, variable, value := surveydecimation.Guess(ins, 1.0)
+				dt := time.Since(t)
+				durationSID += dt
 				if converged && nonTrivial {
 					convergentCounterSID++
 					// test
-					clause := make(map[instance.Variable]bool)
-					clause[variable] = value
-					ins.PushClause(clause)
-					sat, _ := cdcl.Solve(ins)
+					ins.Reduce(variable, value)
+					sat, _ := solver(ins)
 					if sat {
 						trueCounterSID++
-					}
-				}
-				{
-					ins := ins.Clone()
-					variable, value := maxmin.Guess(ins, 1.0)
-					// test
-					clause := make(map[instance.Variable]bool)
-					clause[variable] = value
-					ins.PushClause(clause)
-					sat, _ := cdcl.Solve(ins)
-					if sat {
-						trueCounterMaxMin++
 					}
 				}
 
 				convergentRate := float32(convergentCounterSID) / float32(counter)
 				sidPrecision := float32(trueCounterSID) / float32(convergentCounterSID)
 				effSidPrecision := convergentRate*sidPrecision + (1-convergentRate)*0.5
-				maxminPrecision := float32(trueCounterMaxMin) / float32(counter)
-
+				durationSidAvg := time.Duration(int(durationSID) / counter)
+				durationSolverAvg := time.Duration(int(durationSolver) / counter)
+				fmt.Printf("Iter: %v/%v\n", counter, iter)
+				fmt.Printf("Sover duration: %v\n", durationSolverAvg)
 				fmt.Printf("SID convergent rate: %.4f\n", convergentRate)
 				fmt.Printf("SID precision:       %.4f\n", sidPrecision)
 				fmt.Printf("SID eff precision:   %.4f\n", effSidPrecision)
-				fmt.Printf("MaxMin precision:    %.4f\n", maxminPrecision)
+				fmt.Printf("SID duration:        %v\n", durationSidAvg)
 				fmt.Println()
 			}
 		}
