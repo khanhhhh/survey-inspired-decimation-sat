@@ -1,6 +1,8 @@
-package sat
+package surveydecimation
 
-import "github.com/khanhhhh/sat/rational"
+import "github.com/khanhhhh/sat/guesser/surveydecimation/rational"
+
+import "github.com/khanhhhh/sat/instance"
 
 type surveyPropagationGraph struct {
 	piMap  map[edge][3]rational.Rat // variable -> clause
@@ -9,12 +11,12 @@ type surveyPropagationGraph struct {
 
 // makeSurveyPropagationGraph :
 // Make an empty Survey Propagation Graph
-func (ins *instance) makeSurveyPropagationGraph() (graph *surveyPropagationGraph) {
+func makeSurveyPropagationGraph(ins instance.Instance) (graph *surveyPropagationGraph) {
 	graph = &surveyPropagationGraph{
 		make(map[edge][3]rational.Rat),
 		make(map[edge]rational.Rat),
 	}
-	for _, edge := range ins.allEdges() {
+	for _, edge := range allEdges(ins) {
 		graph.piMap[edge] = [3]rational.Rat{
 			rational.FromInt(1, 2),
 			rational.FromInt(1, 2),
@@ -27,7 +29,7 @@ func (ins *instance) makeSurveyPropagationGraph() (graph *surveyPropagationGraph
 
 // iterateSurveyPropagationGraph :
 // Iterate clauseA Survey Propagation Graph
-func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGraph, smooth float64) (absoluteEtaChange float64, graphOut *surveyPropagationGraph) {
+func iterateSurveyPropagationGraph(ins instance.Instance, graphIn *surveyPropagationGraph, smooth float64) (absoluteEtaChange float64, graphOut *surveyPropagationGraph) {
 	// initialize etaChange to 0
 	absoluteEtaChange = 0
 	// make empty graphOut
@@ -36,13 +38,13 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 		make(map[edge]rational.Rat),
 	}
 	// calculate graphOut value for all edges
-	for _, edge := range ins.allEdges() {
+	for _, edge := range allEdges(ins) {
 		variableI := edge.variable
 		clauseA := edge.clause
 		// eta
 		{
 			var eta = rational.FromInt(1, 1)
-			for variableJ := range ins.clauseMap[clauseA] {
+			for variableJ := range ins.ClauseMap()[clauseA] {
 				if variableJ != variableI {
 					triplet := graphIn.piMap[newEdge(variableJ, clauseA)]
 					sum := rational.Add(rational.Add(triplet[0], triplet[1]), triplet[2])
@@ -62,13 +64,13 @@ func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGra
 		{
 			var productAgree = rational.FromInt(1, 1)
 			var productDisagree = rational.FromInt(1, 1)
-			for _, clauseB := range ins.clauseAgree(edge) {
+			for _, clauseB := range clauseAgree(ins, edge) {
 				productAgree = rational.Mul(
 					productAgree,
 					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variableI, clauseB)]),
 				)
 			}
-			for _, clauseB := range ins.clauseDisagree(edge) {
+			for _, clauseB := range clauseDisagree(ins, edge) {
 				productDisagree = rational.Mul(
 					productDisagree,
 					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variableI, clauseB)]),

@@ -1,8 +1,8 @@
-package sat
+package instance
 
 // IsComplete :
 // return true if the assignment is complete
-func (ins *instance) IsComplete(assignment map[variable]bool) (isComplete bool) {
+func (ins *instance) IsComplete(assignment map[Variable]bool) (isComplete bool) {
 	isComplete = true
 	for variable := range ins.variableMap {
 		_, exist := assignment[variable]
@@ -19,7 +19,7 @@ func (ins *instance) IsComplete(assignment map[variable]bool) (isComplete bool) 
 // {
 // return true || return false and the first conflict clause
 // }
-func (ins *instance) Evaluate(assignment map[variable]bool) (sat bool, conflict clause) {
+func (ins *instance) Evaluate(assignment map[Variable]bool) (sat bool, conflict Clause) {
 	sat = true
 	for conflictClause := range ins.clauseMap {
 		unsat := 0

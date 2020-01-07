@@ -2,62 +2,25 @@ package main
 
 import (
 	"fmt"
-	"github.com/khanhhhh/sat"
+
+	"github.com/khanhhhh/sat/guesser/surveydecimation"
+	"github.com/khanhhhh/sat/instance"
+	"github.com/khanhhhh/sat/solver/cdcl"
 )
 
 func main() {
-	satCount := 0
-	convergedCountSID := 0
-	nonTrivialCountSID := 0
-	trueCountSID := 0
-	trueCountMaxMin := 0
-	for iter := 1; ; iter++ {
-		ins := sat.Random3SAT(128, 4.2)
-		isSat, _ := ins.CdclSolve()
-		if isSat {
-			satCount++
-			{
-				ok, nonTrivialCover, variable, value := ins.SidPredict()
-				if ok {
-					convergedCountSID++
-				}
-				if ok && nonTrivialCover {
-					nonTrivialCountSID++
-					// test
-					ins := ins.Clone()
-					ins.PushClause(sat.Literal{
-						Index: variable,
-						Sign:  value,
-					})
-					isSat, _ := ins.CdclSolve()
-					if isSat {
-						trueCountSID++
-					}
-				}
-			}
-			{
-				variable, value := ins.MaxMinPredict()
-				// test
-				ins := ins.Clone()
-				ins.PushClause(sat.Literal{
-					Index: variable,
-					Sign:  value,
-				})
-				isSat, _ := ins.CdclSolve()
-				if isSat {
-					trueCountMaxMin++
-				}
-			}
-			fmt.Printf("Precision SID   :\t%.4f\n",
-				float32(trueCountSID)/float32(nonTrivialCountSID),
-			)
-			fmt.Printf("Recall    SID   :\t%.4f\n",
-				float32(trueCountSID)/float32(satCount),
-			)
-			fmt.Printf("Precision MaxMin:\t%.4f\n",
-				float32(trueCountMaxMin)/float32(satCount),
-			)
-			fmt.Println()
+	ins := instance.Random3SAT(40, 3.2)
+	sat, assignment := cdcl.Solve(ins)
+	eval, conflict := ins.Evaluate(assignment)
+	fmt.Println(sat, eval, conflict)
+	if sat {
+		converged, nonTrivial, variable, value := surveydecimation.Guess(ins)
+		if converged && nonTrivial {
+			clause := make(map[instance.Variable]bool)
+			clause[variable] = value
+			ins.PushClause(clause)
+			sat, _ := cdcl.Solve(ins)
+			fmt.Println("prediction is: ", sat)
 		}
 	}
 }

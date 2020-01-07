@@ -1,25 +1,27 @@
-package sat
+package surveydecimation
 
-import "github.com/khanhhhh/sat/rational"
+import "github.com/khanhhhh/sat/guesser/surveydecimation/rational"
+
+import "github.com/khanhhhh/sat/instance"
 
 // surveyDecimation :
 // inference max bias variable from a Survey Propagation Graph
-func (ins *instance) surveyDecimation(graphIn *surveyPropagationGraph, smooth float64) (nonTrivialCover bool, maxBiasVariable variable, maxBiasValue bool) {
+func surveyDecimation(ins instance.Instance, graphIn *surveyPropagationGraph, smooth float64) (nonTrivialCover bool, maxBiasVariable instance.Variable, maxBiasValue bool) {
 	var maxBias = rational.FromInt(0, 1)
 	// select maxBias over all variables
-	for _, variable := range ins.allVariables() {
+	for variable := range ins.VariableMap() {
 		// calculate mu
 		var mu [3]rational.Rat
 		{
 			var productPositive = rational.FromInt(1, 1)
 			var productNegative = rational.FromInt(1, 1)
-			for _, clause := range ins.clausePositive(variable) {
+			for _, clause := range clausePositive(ins, variable) {
 				productPositive = rational.Mul(
 					productPositive,
 					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variable, clause)]),
 				)
 			}
-			for _, clause := range ins.clauseNegative(variable) {
+			for _, clause := range clauseNegative(ins, variable) {
 				productNegative = rational.Mul(
 					productNegative,
 					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variable, clause)]),
