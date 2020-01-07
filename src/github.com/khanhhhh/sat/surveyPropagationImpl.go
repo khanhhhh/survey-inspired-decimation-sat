@@ -1,81 +1,102 @@
 package sat
 
-import "math"
+import "github.com/khanhhhh/sat/rational"
 
 type surveyPropagationGraph struct {
-	piMap  map[edge][3]message // variable -> clause
-	etaMap map[edge]message    // clause -> variable
+	piMap  map[edge][3]rational.Rat // variable -> clause
+	etaMap map[edge]rational.Rat    // clause -> variable
 }
 
 // makeSurveyPropagationGraph :
 // Make an empty Survey Propagation Graph
 func (ins *instance) makeSurveyPropagationGraph() (graph *surveyPropagationGraph) {
 	graph = &surveyPropagationGraph{
-		make(map[edge][3]message),
-		make(map[edge]message),
+		make(map[edge][3]rational.Rat),
+		make(map[edge]rational.Rat),
 	}
-	for _, e := range ins.allEdges() {
-		graph.piMap[e] = [3]message{0.5, 0.5, 0.5}
-		graph.etaMap[e] = 0.5
+	for _, edge := range ins.allEdges() {
+		graph.piMap[edge] = [3]rational.Rat{
+			rational.FromInt(1, 2),
+			rational.FromInt(1, 2),
+			rational.FromInt(1, 2),
+		}
+		graph.etaMap[edge] = rational.FromInt(1, 2)
 	}
 	return graph
 }
 
 // iterateSurveyPropagationGraph :
-// Iterate a Survey Propagation Graph
-func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGraph, smooth float64) (absoluteEtaChange message, graphOut *surveyPropagationGraph) {
+// Iterate clauseA Survey Propagation Graph
+func (ins *instance) iterateSurveyPropagationGraph(graphIn *surveyPropagationGraph, smooth float64) (absoluteEtaChange float64, graphOut *surveyPropagationGraph) {
 	// initialize etaChange to 0
 	absoluteEtaChange = 0
 	// make empty graphOut
 	graphOut = &surveyPropagationGraph{
-		make(map[edge][3]message),
-		make(map[edge]message),
+		make(map[edge][3]rational.Rat),
+		make(map[edge]rational.Rat),
 	}
 	// calculate graphOut value for all edges
-	for _, e := range ins.allEdges() {
-		i := e.variable
-		a := e.clause
+	for _, edge := range ins.allEdges() {
+		variableI := edge.variable
+		clauseA := edge.clause
 		// eta
 		{
-			var eta message = 1
-			for j := range ins.clauseMap[a] {
-				if j != i {
-					triplet := graphIn.piMap[edge{j, a}]
-					eta *= triplet[0] / (triplet[0] + triplet[1] + triplet[2])
+			var eta = rational.FromInt(1, 1)
+			for variableJ := range ins.clauseMap[clauseA] {
+				if variableJ != variableI {
+					triplet := graphIn.piMap[newEdge(variableJ, clauseA)]
+					sum := rational.Add(rational.Add(triplet[0], triplet[1]), triplet[2])
+					eta *= rational.Div(triplet[0], sum)
 				}
 			}
 			// detect nan : if sum triplet == 0 => eta = NaN
-			if math.IsNaN(eta) {
-				panic("eta: NaN")
+			//if math.IsNaN(eta) {
+			//	panic("eta: NaN")
+			//}
+			if rational.Abs(rational.Sub(eta, graphIn.etaMap[edge])).ToFloat() > absoluteEtaChange {
+				absoluteEtaChange = rational.Abs(rational.Sub(eta, graphIn.etaMap[edge])).ToFloat()
 			}
-			if absMessage(eta-graphIn.etaMap[e]) > absoluteEtaChange {
-				absoluteEtaChange = absMessage(eta - graphIn.etaMap[e])
-			}
-			graphOut.etaMap[e] = eta
+			graphOut.etaMap[edge] = eta
 		}
 		// pi
 		{
-			var productAgree message = 1
-			var productDisagree message = 1
-			for _, b := range ins.clauseAgree(e) {
-				productAgree *= 1 - graphIn.etaMap[edge{i, b}]
+			var productAgree = rational.FromInt(1, 1)
+			var productDisagree = rational.FromInt(1, 1)
+			for _, clauseB := range ins.clauseAgree(edge) {
+				productAgree = rational.Mul(
+					productAgree,
+					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variableI, clauseB)]),
+				)
 			}
-			for _, b := range ins.clauseDisagree(e) {
-				productDisagree *= 1 - graphIn.etaMap[edge{i, b}]
+			for _, clauseB := range ins.clauseDisagree(edge) {
+				productDisagree = rational.Mul(
+					productDisagree,
+					rational.Sub(rational.FromInt(1, 1), graphIn.etaMap[newEdge(variableI, clauseB)]),
+				)
 			}
-			var triplet [3]message
-			triplet[0] = (1 - smooth*productDisagree) * productAgree
-			triplet[1] = (1 - smooth*productAgree) * productDisagree
-			triplet[2] = smooth * productAgree * productDisagree
+			var triplet [3]rational.Rat
+			smoothConst := rational.FromFloat(smooth)
+			triplet[0] = rational.Mul(
+				productAgree,
+				rational.Sub(rational.FromInt(1, 1), rational.Mul(smoothConst, productDisagree)),
+			)
+			triplet[1] = rational.Mul(
+				productDisagree,
+				rational.Sub(rational.FromInt(1, 1), rational.Mul(smoothConst, productAgree)),
+			)
+			triplet[2] = rational.Mul(
+				rational.FromFloat(smooth),
+				rational.Mul(productAgree, productDisagree),
+			)
 			// detect nan
-			if math.IsNaN(triplet[0]) || math.IsNaN(triplet[1]) || math.IsNaN(triplet[2]) {
-				panic("triplet: NaN")
-			}
+			//if math.IsNaN(triplet[0]) || math.IsNaN(triplet[1]) || math.IsNaN(triplet[2]) {
+			//	panic("triplet: NaN")
+			//}
 			// detect zero
 			if triplet[0]+triplet[1]+triplet[2] == 0 {
 				panic("triplet: Zero")
 			}
-			graphOut.piMap[e] = triplet
+			graphOut.piMap[edge] = triplet
 		}
 	}
 	return absoluteEtaChange, graphOut
