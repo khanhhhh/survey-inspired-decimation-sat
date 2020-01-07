@@ -91,9 +91,15 @@ func test1() {
 					}
 				}
 
-				fmt.Printf("SID convergent rate: %.4f\n", float32(convergentCounterSID)/float32(counter))
-				fmt.Printf("SID precision:       %.4f\n", float32(trueCounterSID)/float32(convergentCounterSID))
-				fmt.Printf("MaxMin precision:    %.4f\n", float32(trueCounterMaxMin)/float32(counter))
+				convergentRate := float32(convergentCounterSID) / float32(counter)
+				sidPrecision := float32(trueCounterSID) / float32(convergentCounterSID)
+				effSidPrecision := convergentRate*sidPrecision + (1-convergentRate)*0.5
+				maxminPrecision := float32(trueCounterMaxMin) / float32(counter)
+
+				fmt.Printf("SID convergent rate: %.4f\n", convergentRate)
+				fmt.Printf("SID precision:       %.4f\n", sidPrecision)
+				fmt.Printf("SID eff precision:   %.4f\n", effSidPrecision)
+				fmt.Printf("MaxMin precision:    %.4f\n", maxminPrecision)
 				fmt.Println()
 			}
 		}
