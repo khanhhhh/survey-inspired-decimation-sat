@@ -1,2 +1,5 @@
 #!/usr/bin/env sh
+./get
+echo "Building..."
 GOPATH=$(pwd) go build -o a.out
+echo "Done"

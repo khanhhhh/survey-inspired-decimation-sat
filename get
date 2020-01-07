@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
+echo "Getting packages..."
 GOPATH=$(pwd) go get github.com/irifrance/gini
 GOPATH=$(pwd) go get github.com/khanhhhh/sat
+echo "Done"
