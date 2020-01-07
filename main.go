@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/khanhhhh/sat/guesser/maxmin"
 	"github.com/khanhhhh/sat/guesser/surveydecimation"
@@ -12,41 +13,36 @@ import (
 )
 
 func main() {
-	test1()
+	test2()
 }
 
 func test2() {
-	ins := instance.Random3SAT(35, 4.0)
+	ins := instance.Random3SAT(512, 4.0)
 	{
-		sat, assignment := cdcl.Solve(ins)
-		eval, _ := ins.Evaluate(assignment)
-		fmt.Println(sat, eval)
-	}
-	{
-		guesser1 := func(ins instance.Instance) (variableOut instance.Variable, valueOut bool) {
-			variableOut, valueOut = maxmin.Guess(ins, 1)
-			return variableOut, valueOut
-		}
-		guesser2 := func(ins instance.Instance) (variableOut instance.Variable, valueOut bool) {
-			var converged bool
+		t := time.Now()
+		var guesser = func(ins instance.Instance) (converged bool, variableOut instance.Variable, valueOut bool) {
 			var nonTrivial bool
 			// unitpropagation
 			converged, variableOut, valueOut = unitpropagation.Guess(ins)
 			if converged {
-				return variableOut, valueOut
+				return converged, variableOut, valueOut
 			}
+			// surveydecimation
 			converged, nonTrivial, variableOut, valueOut = surveydecimation.Guess(ins, 1.0)
 			if converged && nonTrivial {
-				return variableOut, valueOut
+				return converged, variableOut, valueOut
 			}
-			variableOut, valueOut = maxmin.Guess(ins, 1)
-			return variableOut, valueOut
+			return converged, variableOut, valueOut
 		}
-		_ = guesser1
-		_ = guesser2
-		sat, assignment := search.Solve(ins, guesser2)
+		sat, assignment := search.Solve(ins, guesser, false)
 		eval, _ := ins.Evaluate(assignment)
-		fmt.Println(sat, eval)
+		fmt.Println(sat, eval, time.Since(t))
+	}
+	{
+		t := time.Now()
+		sat, assignment := cdcl.Solve(ins)
+		eval, _ := ins.Evaluate(assignment)
+		fmt.Println(sat, eval, time.Since(t))
 	}
 }
 
