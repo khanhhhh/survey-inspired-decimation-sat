@@ -1,10 +1,10 @@
 package surveydecimation
 
-import "github.com/khanhhhh/sat/instance"
+import "github.com/khanhhhh/sat-solver/instance"
 
 type edge struct {
 	variable instance.Variable
-	clause instance.Clause
+	clause   instance.Clause
 }
 
 func newEdge(variableIn instance.Variable, clauseIn instance.Clause) (edgeOut edge) {
@@ -66,7 +66,7 @@ func clauseDisagree(ins instance.Instance, edgeIn edge) (setOut []instance.Claus
 	return setOut
 }
 
-// allEdges : 
+// allEdges :
 // list all edges of a instance
 func allEdges(ins instance.Instance) (edgeOut []edge) {
 	edgeOut = make([]edge, 0)

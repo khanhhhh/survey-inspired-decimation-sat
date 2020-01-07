@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/khanhhhh/sat/guesser/maxmin"
-	"github.com/khanhhhh/sat/guesser/surveydecimation"
-	"github.com/khanhhhh/sat/instance"
-	"github.com/khanhhhh/sat/solver/cdcl"
+	"github.com/khanhhhh/sat-solver/guesser/maxmin"
+	"github.com/khanhhhh/sat-solver/guesser/surveydecimation"
+	"github.com/khanhhhh/sat-solver/instance"
+	"github.com/khanhhhh/sat-solver/solver/cdcl"
 )
 
 func main() {

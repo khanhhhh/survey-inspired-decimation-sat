@@ -5,7 +5,7 @@ package surveydecimation
 import (
 	"math"
 
-	"github.com/khanhhhh/sat/instance"
+	"github.com/khanhhhh/sat-solver/instance"
 )
 
 var tolerance float64 = 0.001

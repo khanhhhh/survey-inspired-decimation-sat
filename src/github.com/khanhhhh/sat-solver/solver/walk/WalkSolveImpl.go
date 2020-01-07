@@ -4,13 +4,13 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/khanhhhh/sat/instance"
+	"github.com/khanhhhh/sat-solver/instance"
 )
 
 var randFlip int = 64
 var base float64 = 1.4
 
-// WalkSolve :
+// Solve :
 // Solve SAT Instance stochastically
 func Solve(ins instance.Instance) (sat bool, assignment map[instance.Variable]bool) {
 	assignment = make(map[instance.Variable]bool)

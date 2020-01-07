@@ -1,8 +1,8 @@
 package surveydecimation
 
-import "github.com/khanhhhh/sat/guesser/surveydecimation/message"
+import "github.com/khanhhhh/sat-solver/guesser/surveydecimation/message"
 
-import "github.com/khanhhhh/sat/instance"
+import "github.com/khanhhhh/sat-solver/instance"
 
 // surveyDecimation :
 // inference max bias variable from a Survey Propagation Graph
