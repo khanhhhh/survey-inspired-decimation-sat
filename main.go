@@ -6,10 +6,9 @@ import (
 
 	"github.com/khanhhhh/sat/guesser/maxmin"
 	"github.com/khanhhhh/sat/guesser/surveydecimation"
-	"github.com/khanhhhh/sat/guesser/unitpropagation"
 	"github.com/khanhhhh/sat/instance"
 	"github.com/khanhhhh/sat/solver/cdcl"
-	"github.com/khanhhhh/sat/solver/search"
+	"github.com/khanhhhh/sat/solver/surveysearch"
 )
 
 func main() {
@@ -20,21 +19,7 @@ func test2() {
 	ins := instance.Random3SAT(512, 4.0)
 	{
 		t := time.Now()
-		var guesser = func(ins instance.Instance) (converged bool, variableOut instance.Variable, valueOut bool) {
-			var nonTrivial bool
-			// unitpropagation
-			converged, variableOut, valueOut = unitpropagation.Guess(ins)
-			if converged {
-				return converged, variableOut, valueOut
-			}
-			// surveydecimation
-			converged, nonTrivial, variableOut, valueOut = surveydecimation.Guess(ins, 1.0)
-			if converged && nonTrivial {
-				return converged, variableOut, valueOut
-			}
-			return converged, variableOut, valueOut
-		}
-		sat, assignment := search.Solve(ins, guesser, false)
+		sat, assignment := surveysearch.Solve(ins)
 		eval, _ := ins.Evaluate(assignment)
 		fmt.Println(sat, eval, time.Since(t))
 	}
