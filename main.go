@@ -1,7 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"log"
+	"os"
+	"runtime"
+	"runtime/pprof"
 	"time"
 
 	"github.com/khanhhhh/sat/guesser/surveydecimation"
@@ -11,11 +16,44 @@ import (
 )
 
 func main() {
+	var cpuprofile = flag.String("cpuprofile", "./cpu.prof", "write cpu profile to `file`")
+	var memprofile = flag.String("memprofile", "./mem.prof", "write memory profile to `file`")
+
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
+	}
+
+	// ... rest of the program ...
+	test()
+
+	if *memprofile != "" {
+		f, err := os.Create(*memprofile)
+		if err != nil {
+			log.Fatal("could not create memory profile: ", err)
+		}
+		defer f.Close()
+		runtime.GC() // get up-to-date statistics
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			log.Fatal("could not write memory profile: ", err)
+		}
+	}
+}
+
+func test() {
 	test1()
 }
 
 func test2() {
-	ins := instance.Random3SAT(512, 4.0)
+	ins := instance.Random3SAT(256, 4.0)
 	{
 		t := time.Now()
 		sat, assignment := surveysearch.Solve(ins)
@@ -37,7 +75,7 @@ func test1() {
 	var durationSID time.Duration = 0
 	var durationSolver time.Duration = 0
 	solver := cdcl.Solve
-	for iter := 1; ; iter++ {
+	for iter := 1; iter < 1000; iter++ {
 		ins := instance.Random3SAT(128, 4.1)
 		t := time.Now()
 		sat, assignment := solver(ins)
