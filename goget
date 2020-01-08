@@ -2,4 +2,5 @@
 echo "Getting packages..."
 GOPATH=$(pwd) go get github.com/irifrance/gini
 GOPATH=$(pwd) go get github.com/khanhhhh/sat
+GOPATH=$(pwd) go get github.com/pkg/profile
 echo "Done"

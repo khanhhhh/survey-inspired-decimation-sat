@@ -13,6 +13,7 @@ import (
 	"github.com/khanhhhh/sat/instance"
 	"github.com/khanhhhh/sat/solver/cdcl"
 	"github.com/khanhhhh/sat/solver/surveysearch"
+	"github.com/pkg/profile"
 )
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	}
 
 	// ... rest of the program ...
+	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
 	test()
 
 	if *memprofile != "" {
