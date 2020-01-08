@@ -38,7 +38,7 @@ func test1() {
 	var durationSolver time.Duration = 0
 	solver := cdcl.Solve
 	for iter := 1; ; iter++ {
-		ins := instance.Random3SAT(128, 64/15)
+		ins := instance.Random3SAT(128, 4.1)
 		t := time.Now()
 		sat, assignment := solver(ins)
 		dt := time.Since(t)
