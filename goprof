@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-GOPATH=$(pwd) go tool pprof cpu.prof
+GOPATH=$(pwd) go tool pprof -http=:6060 cpu.prof
