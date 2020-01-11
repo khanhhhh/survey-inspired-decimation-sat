@@ -84,7 +84,7 @@ func test3() {
 
 func test2() {
 	for {
-		ins := instance.Random3SAT(1000, 4.0)
+		ins := instance.Random3SAT(500, 4.0)
 		{
 			t := time.Now()
 			sat, assignment := surveysearch.Solve(ins)
