@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-./goget
+./get
 echo "Starting godoc server..."
 echo "http://localhost:6060/"
 GOPATH=$(pwd) godoc -http=:6060

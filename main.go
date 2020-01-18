@@ -48,7 +48,15 @@ func main() {
 }
 
 func test() {
-	test2()
+	test4()
+}
+
+func test4() {
+	for {
+		ins := instance.Random3SATHard(40, cdcl.Solve)
+		sat, _ := cdcl.Solve(ins)
+		fmt.Println(sat)
+	}
 }
 
 func test3() {
